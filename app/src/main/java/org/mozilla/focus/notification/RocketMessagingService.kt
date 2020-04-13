@@ -53,12 +53,6 @@ class RocketMessagingService : FirebaseMessagingServiceWrapper() {
 
     override fun onDataMessage(data: MutableMap<String, String>) {
 
-        val serverPushDisabled = FirebaseHelper.getFirebase().getRcBoolean(BOOL_IS_SERVER_PUSH_DISABLED)
-        Log.d(TAG, "onDataMessage disabled:$$serverPushDisabled ")
-        if (serverPushDisabled) {
-            // return early if we pref off this feature in Firebase Remote Config
-            return
-        }
         val messageId = parseMessageId(data)
         val title = parseTitle(data)
         val body = parseBody(data)
@@ -283,7 +277,7 @@ class RocketMessagingService : FirebaseMessagingServiceWrapper() {
             }
 
             // something like //"http://10.0.2.2:8080/api/v1/user/token"
-            val userTokenApiUrl = FirebaseHelper.getFirebase().getRcString(STR_USER_TOKEN_API)
+            val userTokenApiUrl = "https://rocket-dev01.appspot.com/api/v1/user/token" // FirebaseHelper.getFirebase().getRcString(STR_USER_TOKEN_API)
             if (userTokenApiUrl.isEmpty()) {
                 Log.w(TAG, "userTokenApiUrl is empty. Wait for RemoteConfig and retry")
                 return
