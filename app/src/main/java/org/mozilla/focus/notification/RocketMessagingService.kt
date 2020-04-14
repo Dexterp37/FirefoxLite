@@ -24,6 +24,7 @@ import mozilla.components.concept.fetch.MutableHeaders
 import mozilla.components.concept.fetch.Request
 import mozilla.components.concept.fetch.interceptor.withInterceptors
 import mozilla.components.lib.fetch.httpurlconnection.HttpURLConnectionClient
+import org.mozilla.focus.R
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.telemetry.TelemetryWrapper.getNotification
 import org.mozilla.focus.telemetry.TelemetryWrapper.isTelemetryEnabled
@@ -43,6 +44,7 @@ class RocketMessagingService : FirebaseMessagingServiceWrapper() {
 
     override fun onNotificationMessage(data: Map<String, String>, title: String?, body: String?, imageUrl: String?) {
         val messageId = parseMessageId(data)
+        Log.d(TAG, "onNotificationMessage:" + messageId)
         val openUrl = parseOpenUrl(data)
         val pushCommand = parseCommand(data)
         val deepLink = parseDeepLink(data)
@@ -55,6 +57,7 @@ class RocketMessagingService : FirebaseMessagingServiceWrapper() {
 
         val messageId = parseMessageId(data)
         val title = parseTitle(data)
+        Log.d(TAG, "onDataMessage:" + messageId)
         val body = parseBody(data)
         val openUrl = parseOpenUrl(data)
         val pushCommand = parseCommand(data)
@@ -131,7 +134,7 @@ class RocketMessagingService : FirebaseMessagingServiceWrapper() {
         const val LONG_DATA_MSG_DISPLAY_TIMESTAMP = "display_timestamp"
         const val STR_DATA_MSG_IMAGE_URL = "image_url"
 
-        private const val TAG = "RocketMessagingService"
+        private const val TAG = "FCM_SERVICE"
         private const val STR_USER_TOKEN_API = "str_user_token_api"
         private const val BOOL_IS_SERVER_PUSH_DISABLED = "bool_is_server_push_disabled"
 
@@ -243,8 +246,8 @@ class RocketMessagingService : FirebaseMessagingServiceWrapper() {
         fun checkFcmTokenUploaded(applicationContext: Context) {
             val hashedFcmToken = Settings.getInstance(applicationContext).hashedFcmToken
             val currentFcmToken = FirebaseHelper.getFirebase().getFcmToken()
-
-            if (currentFcmToken == null) {
+            Log.w(TAG, "currentFcmToken:$currentFcmToken")
+            if (currentFcmToken.isNullOrEmpty()) {
                 Log.w(TAG, "currentFcmToken is null. Wait for it and retry")
                 return
             }
@@ -271,6 +274,10 @@ class RocketMessagingService : FirebaseMessagingServiceWrapper() {
         @WorkerThread
         private fun sendRegistrationToServer(applicationContext: Context, fbUid: String, fcmToken: String) {
             val telemetryClientId = TelemetryHolder.get().clientId
+            Log.w(TAG, "telemetryClientId=$telemetryClientId")
+            Log.w(TAG, "fcmToken=$fcmToken")
+            Log.w(TAG, "google_app_id=${applicationContext.getString(R.string.google_app_id)}")
+
             if (telemetryClientId == null) {
                 Log.w(TAG, "telemetryClientId is null")
                 return

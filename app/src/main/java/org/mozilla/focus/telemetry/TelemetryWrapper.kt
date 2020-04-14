@@ -422,7 +422,7 @@ object TelemetryWrapper {
             val configuration = TelemetryConfiguration(context)
                     .setServerEndpoint("https://incoming.telemetry.mozilla.org")
                     .setAppName(TELEMETRY_APP_NAME_ZERDA)
-                    .setUpdateChannel(BuildConfig.BUILD_TYPE)
+                    .setUpdateChannel("preuat")
                     .setPreferencesImportantForTelemetry(
                             resources.getString(R.string.pref_key_search_engine),
                             resources.getString(R.string.pref_key_turbo_mode),
