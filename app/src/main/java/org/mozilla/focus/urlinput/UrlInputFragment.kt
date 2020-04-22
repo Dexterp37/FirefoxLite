@@ -91,7 +91,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
         clearView = view.findViewById(R.id.clear)
         clearView.setOnClickListener(this)
 
-        suggestionView = view.findViewById<View>(R.id.search_suggestion) as FlowLayout
+//        suggestionView = view.findViewById<View>(R.id.search_suggestion) as FlowLayout
 
         urlView = view.findViewById<View>(R.id.url_edit) as InlineAutocompleteEditText
         urlView.setOnTextChangeListener(::onTextChange)
@@ -257,7 +257,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     }
 
     override fun setSuggestions(texts: List<CharSequence>?) {
-        this.suggestionView.removeAllViews()
+//        this.suggestionView.removeAllViews()
         if (texts == null) {
             return
         }
