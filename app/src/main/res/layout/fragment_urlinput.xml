@@ -98,13 +98,13 @@
                 app:layout_constraintTop_toTopOf="@id/quick_search_recycler_view" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <View-->
-<!--            android:id="@+id/dismiss"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_above="@id/quick_search_container"-->
-<!--            android:background="@color/colorUrlInputBackground"-->
-<!--            android:contentDescription="@string/content_description_dismiss_input" />-->
+        <View
+            android:id="@+id/dismiss"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/awesomeBar"
+            android:background="@color/colorUrlInputBackground"
+            android:contentDescription="@string/content_description_dismiss_input" />
 
 <!--        <org.mozilla.focus.widget.FlowLayout-->
 <!--            android:id="@+id/search_suggestion"-->
@@ -117,16 +117,16 @@
 
         <mozilla.components.browser.awesomebar.BrowserAwesomeBar
             android:id="@+id/awesomeBar"
-            android:background="@color/colorUrlInputBackground"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/quick_search_container"
+            android:background="@color/colorUrlInputBackground"
             android:padding="4dp"
             android:visibility="visible"
-            android:layout_above="@id/quick_search_container"
-            mozac:awesomeBarTitleTextColor="#ffffff"
+            mozac:awesomeBarChipBackgroundColor="@color/colorSuggestionBox"
+            mozac:awesomeBarChipTextColor="@color/colorDownloadText"
             mozac:awesomeBarDescriptionTextColor="#dddddd"
-            mozac:awesomeBarChipTextColor="#ffffff"
-            mozac:awesomeBarChipBackgroundColor="#444444" />
+            mozac:awesomeBarTitleTextColor="#ffffff" />
     </RelativeLayout>
 
 </org.mozilla.focus.widget.ResizableKeyboardLayout>

@@ -20,9 +20,9 @@ import java.io.IOException
 import java.util.UUID
 
 class SearchSuggestionProvider(
-    private val searchEngine: SearchEngine,
-    private val userAgent: String,
-    private val searchUseCase: (text: String) -> Unit
+        private val searchEngine: SearchEngine,
+        private val userAgent: String,
+        private val searchUseCase: (text: String) -> Unit
 ) : AwesomeBar.SuggestionProvider {
 
     private var queryTask: AsyncTask<*, *, *>? = null
@@ -30,7 +30,6 @@ class SearchSuggestionProvider(
     companion object {
         private const val TAG = "awesome_s_p"
         private const val MAX_SUGGESTION_COUNT = 5
-        private const val ID_OF_ENTERED_TEXT = "<@@@entered_text_id@@@>"
     }
 
     override val id: String = UUID.randomUUID().toString()
@@ -58,8 +57,6 @@ class SearchSuggestionProvider(
                         val response = JSONArray(responseStr)
                         val suggestions = response.getJSONArray(1)
                         val size = suggestions.length()
-//                        val suggests = mutableListOf<AwesomeBar.Suggestion>()
-
                         val coerceAtMost = size.coerceAtMost(MAX_SUGGESTION_COUNT)
 
                         val chips = mutableListOf<AwesomeBar.Suggestion.Chip>()
@@ -72,30 +69,11 @@ class SearchSuggestionProvider(
                                 title = searchEngine.name,
                                 icon = searchEngine.icon,
                                 chips = chips,
-                                score = Int.MAX_VALUE,
+                                score = Int.MIN_VALUE,
                                 onChipClicked = { chip ->
                                     searchUseCase.invoke(chip.title)
                                 }
                         ))
-//                        for (i in 0..coerceAtMost) {
-//                            val item = suggestions[i] as String
-//                            suggests.add(
-//                                    AwesomeBar.Suggestion(
-//                                            provider = this,
-//                                            // We always use the same ID for the entered text so that this suggestion gets replaced "in place".
-//                                            id = if (item == text) ID_OF_ENTERED_TEXT else item,
-//                                            title = item,
-//                                            description = searchEngine.name,
-//                                            score = Int.MAX_VALUE - i,
-//                                            onSuggestionClicked = {
-//                                                searchUseCase.invoke(item)
-//                                            }
-//                                    )
-//                            )
-//                        }
-//                        Log.d(TAG, "onInputChanged=======suggests:${suggests.size}")
-//
-//                        suggests
                     }
                     else -> {
                         if (BuildConfig.DEBUG) {
@@ -107,11 +85,10 @@ class SearchSuggestionProvider(
                 }
             }
         } catch (e: IOException) {
-            Log.e(TAG, "onInputChanged=======$e")
-
+            Log.e(TAG, "[SearchSuggestionProvider][onInputChanged][IOException]$e")
             return listOf()
         } catch (e: Exception) {
-            Log.e(TAG, "onInputChanged=======$e")
+            Log.e(TAG, "[SearchSuggestionProvider][onInputChanged][Exception]$e")
             return listOf()
         }
     }

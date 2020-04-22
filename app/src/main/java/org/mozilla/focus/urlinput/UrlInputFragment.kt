@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,7 +62,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     private lateinit var urlView: InlineAutocompleteEditText
     private lateinit var suggestionView: FlowLayout
     private lateinit var clearView: View
-    //    private lateinit var dismissView: View
+    private lateinit var dismissView: View
     private lateinit var quickSearchRecyclerView: RecyclerView
     private lateinit var quickSearchView: ViewGroup
     private var lastRequestTime: Long = 0
@@ -81,14 +83,14 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_urlinput, container, false)
 
-//        dismissView = view.findViewById(R.id.dismiss)
-//        dismissView.setOnClickListener(this)
+        dismissView = view.findViewById(R.id.dismiss)
+        dismissView.setOnClickListener(this)
 
         clearView = view.findViewById(R.id.clear)
         clearView.setOnClickListener(this)
@@ -119,8 +121,9 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val repo = BookmarkRepository.getInstance(BookmarksDatabase.getInstance(context!!))
+        val icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_illustration_no_bookmarks)?.toBitmap()
         awesomeBar.addProviders(
-                BookmarkSuggestionProvider(repo) {
+                BookmarkSuggestionProvider(icon, repo) {
                     onSuggestionClicked(it)
                 },
                 SearchSuggestionProvider(
@@ -184,10 +187,10 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
                 awesomeBar.onInputCancelled()
                 TelemetryWrapper.searchClear()
             }
-//            R.id.dismiss -> {
-//                dismiss()
-//                TelemetryWrapper.searchDismiss()
-//            }
+            R.id.dismiss -> {
+                dismiss()
+                TelemetryWrapper.searchDismiss()
+            }
             R.id.suggestion_item -> onSuggestionClicked((view as TextView).text)
             else -> throw IllegalStateException("Unhandled view in onClick()")
         }
@@ -329,8 +332,8 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     }
 
     private fun onTextChange(
-        originalText: String,
-        @Suppress("UNUSED_PARAMETER") autocompleteText: String
+            originalText: String,
+            @Suppress("UNUSED_PARAMETER") autocompleteText: String
     ) {
         if (autoCompleteInProgress) {
             return
