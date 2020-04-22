@@ -32,6 +32,7 @@ import org.mozilla.focus.utils.ViewUtils
 import org.mozilla.focus.web.WebViewProvider
 import org.mozilla.focus.widget.FlowLayout
 import org.mozilla.rocket.awesomebar.BookmarkSuggestionProvider
+import org.mozilla.rocket.awesomebar.SearchSuggestionProvider
 import org.mozilla.rocket.chrome.ChromeViewModel
 import org.mozilla.rocket.chrome.ChromeViewModel.OpenUrlAction
 import org.mozilla.rocket.content.appComponent
@@ -59,7 +60,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     private lateinit var urlView: InlineAutocompleteEditText
     private lateinit var suggestionView: FlowLayout
     private lateinit var clearView: View
-//    private lateinit var dismissView: View
+    //    private lateinit var dismissView: View
     private lateinit var quickSearchRecyclerView: RecyclerView
     private lateinit var quickSearchView: ViewGroup
     private var lastRequestTime: Long = 0
@@ -120,6 +121,11 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
         val repo = BookmarkRepository.getInstance(BookmarksDatabase.getInstance(context!!))
         awesomeBar.addProviders(
                 BookmarkSuggestionProvider(repo) {
+                    onSuggestionClicked(it)
+                },
+                SearchSuggestionProvider(
+                        SearchEngineManager.getInstance().getDefaultSearchEngine(context),
+                        WebViewProvider.getUserAgentString(activity)) {
                     onSuggestionClicked(it)
                 }
         )

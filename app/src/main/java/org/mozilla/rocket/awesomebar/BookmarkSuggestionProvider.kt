@@ -10,7 +10,7 @@ class BookmarkSuggestionProvider(
     private val onSuggestionClicked: ((text: String) -> Unit)
 ) : AwesomeBar.SuggestionProvider {
     companion object {
-        private const val TAG = "AAAAA"
+        private const val TAG = "awesome_b_p"
         private const val BOOKMARKS_SUGGESTION_LIMIT = 5
     }
 
