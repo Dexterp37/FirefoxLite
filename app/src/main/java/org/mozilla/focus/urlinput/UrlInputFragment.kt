@@ -6,8 +6,6 @@
 package org.mozilla.focus.urlinput
 
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -19,10 +17,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.Lazy
+import kotlinx.android.synthetic.main.fragment_urlinput.awesomeBar
 import mozilla.components.browser.domains.autocomplete.ShippedDomainsProvider
 import mozilla.components.ui.autocomplete.InlineAutocompleteEditText
 import org.mozilla.focus.R
 import org.mozilla.focus.navigation.ScreenNavigator
+import org.mozilla.focus.persistence.BookmarksDatabase
+import org.mozilla.focus.repository.BookmarkRepository
 import org.mozilla.focus.search.SearchEngineManager
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.SearchUtils
@@ -30,6 +31,7 @@ import org.mozilla.focus.utils.SupportUtils
 import org.mozilla.focus.utils.ViewUtils
 import org.mozilla.focus.web.WebViewProvider
 import org.mozilla.focus.widget.FlowLayout
+import org.mozilla.rocket.awesomebar.BookmarkSuggestionProvider
 import org.mozilla.rocket.chrome.ChromeViewModel
 import org.mozilla.rocket.chrome.ChromeViewModel.OpenUrlAction
 import org.mozilla.rocket.content.appComponent
@@ -37,7 +39,6 @@ import org.mozilla.rocket.content.getActivityViewModel
 import org.mozilla.rocket.urlinput.QuickSearch
 import org.mozilla.rocket.urlinput.QuickSearchAdapter
 import org.mozilla.rocket.urlinput.QuickSearchViewModel
-import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -114,6 +115,16 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val repo = BookmarkRepository.getInstance(BookmarksDatabase.getInstance(context!!))
+        awesomeBar.addProviders(
+                BookmarkSuggestionProvider(repo) {
+                    onSuggestionClicked(it)
+                }
+        )
+    }
+
     private fun initQuickSearch(view: View) {
         quickSearchView = view.findViewById(R.id.quick_search_container)
         quickSearchRecyclerView = view.findViewById(R.id.quick_search_recycler_view)
@@ -164,6 +175,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
             R.id.clear -> {
                 urlView.setText("")
                 urlView.requestFocus()
+                awesomeBar.onInputCancelled()
                 TelemetryWrapper.searchClear()
             }
 //            R.id.dismiss -> {
@@ -257,31 +269,32 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     }
 
     override fun setSuggestions(texts: List<CharSequence>?) {
+
 //        this.suggestionView.removeAllViews()
-        if (texts == null) {
-            return
-        }
-
-        val searchKey = urlView.originalText.trim { it <= ' ' }.toLowerCase(Locale.getDefault())
-        for (i in texts.indices) {
-            val item = View.inflate(context, R.layout.tag_text, null) as TextView
-            val str = texts[i].toString()
-            val idx = str.toLowerCase(Locale.getDefault()).indexOf(searchKey)
-            if (idx != -1) {
-                val builder = SpannableStringBuilder(texts[i])
-                builder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                        idx,
-                        idx + searchKey.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                item.text = builder
-            } else {
-                item.text = texts[i]
-            }
-
-            item.setOnClickListener(this)
-            item.setOnLongClickListener(this)
-            this.suggestionView.addView(item)
-        }
+//        if (texts == null) {
+//            return
+//        }
+//
+//        val searchKey = urlView.originalText.trim { it <= ' ' }.toLowerCase(Locale.getDefault())
+//        for (i in texts.indices) {
+//            val item = View.inflate(context, R.layout.tag_text, null) as TextView
+//            val str = texts[i].toString()
+//            val idx = str.toLowerCase(Locale.getDefault()).indexOf(searchKey)
+//            if (idx != -1) {
+//                val builder = SpannableStringBuilder(texts[i])
+//                builder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+//                        idx,
+//                        idx + searchKey.length,
+//                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//                item.text = builder
+//            } else {
+//                item.text = texts[i]
+//            }
+//
+//            item.setOnClickListener(this)
+//            item.setOnLongClickListener(this)
+//            this.suggestionView.addView(item)
+//        }
     }
 
     override fun setQuickSearchVisible(visible: Boolean) {
@@ -317,6 +330,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
             return
         }
         if (allowSuggestion) {
+            awesomeBar.onInputChanged(originalText)
             this@UrlInputFragment.presenter.onInput(originalText, detectThrottle())
         }
         val visibility = if (TextUtils.isEmpty(originalText)) View.GONE else View.VISIBLE

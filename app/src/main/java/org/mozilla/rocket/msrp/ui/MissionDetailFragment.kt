@@ -39,7 +39,6 @@ import kotlinx.android.synthetic.main.fragment_mission_detail.redeem_layout
 import kotlinx.android.synthetic.main.fragment_mission_detail.sign_in_text
 import kotlinx.android.synthetic.main.fragment_mission_detail.title
 import kotlinx.android.synthetic.main.fragment_mission_detail.view.day_text
-import kotlinx.android.synthetic.main.fragment_urlinput.dismiss
 import org.mozilla.focus.R
 import org.mozilla.focus.utils.DialogUtils
 import org.mozilla.focus.utils.IntentUtils
