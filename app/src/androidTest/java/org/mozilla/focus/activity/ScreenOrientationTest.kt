@@ -150,7 +150,7 @@ class ScreenOrientationTest {
         // Test - Should be SCREEN_ORIENTATION_PORTRAIT when the url fragment is presented
         assertEquals(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, activityTestRule.activity.requestedOrientation)
 
-        onView(withId(R.id.dismiss)).perform(click())
+//        onView(withId(R.id.dismiss)).perform(click())
 
         assertEquals(ActivityInfo.SCREEN_ORIENTATION_USER, activityTestRule.activity.requestedOrientation)
 

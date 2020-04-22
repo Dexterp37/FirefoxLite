@@ -58,7 +58,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     private lateinit var urlView: InlineAutocompleteEditText
     private lateinit var suggestionView: FlowLayout
     private lateinit var clearView: View
-    private lateinit var dismissView: View
+//    private lateinit var dismissView: View
     private lateinit var quickSearchRecyclerView: RecyclerView
     private lateinit var quickSearchView: ViewGroup
     private var lastRequestTime: Long = 0
@@ -85,8 +85,8 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     ): View? {
         val view = inflater.inflate(R.layout.fragment_urlinput, container, false)
 
-        dismissView = view.findViewById(R.id.dismiss)
-        dismissView.setOnClickListener(this)
+//        dismissView = view.findViewById(R.id.dismiss)
+//        dismissView.setOnClickListener(this)
 
         clearView = view.findViewById(R.id.clear)
         clearView.setOnClickListener(this)
@@ -166,10 +166,10 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
                 urlView.requestFocus()
                 TelemetryWrapper.searchClear()
             }
-            R.id.dismiss -> {
-                dismiss()
-                TelemetryWrapper.searchDismiss()
-            }
+//            R.id.dismiss -> {
+//                dismiss()
+//                TelemetryWrapper.searchDismiss()
+//            }
             R.id.suggestion_item -> onSuggestionClicked((view as TextView).text)
             else -> throw IllegalStateException("Unhandled view in onClick()")
         }

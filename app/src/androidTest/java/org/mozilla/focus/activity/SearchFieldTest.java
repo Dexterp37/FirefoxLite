@@ -115,7 +115,7 @@ public class SearchFieldTest {
         onView(allOf(withId(R.id.url_edit), isDisplayed())).perform(replaceText(TYPED_GENERAL_TEXT));
 
         // Click outside the search field and soft keyboard
-        onView(allOf(withId(R.id.dismiss), isDisplayed())).perform(click());
+//        onView(allOf(withId(R.id.dismiss), isDisplayed())).perform(click());
 
         // Check if we are back to home
         onView(withId(R.id.home_fragment_fake_input)).check(matches(isDisplayed()));
