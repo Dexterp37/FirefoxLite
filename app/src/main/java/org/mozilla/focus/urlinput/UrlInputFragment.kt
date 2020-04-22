@@ -31,6 +31,7 @@ import org.mozilla.focus.utils.SupportUtils
 import org.mozilla.focus.utils.ViewUtils
 import org.mozilla.focus.web.WebViewProvider
 import org.mozilla.rocket.awesomebar.BookmarkSuggestionProvider
+import org.mozilla.rocket.awesomebar.ClipboardSuggestionProvider
 import org.mozilla.rocket.awesomebar.SearchSuggestionProvider
 import org.mozilla.rocket.chrome.ChromeViewModel
 import org.mozilla.rocket.chrome.ChromeViewModel.OpenUrlAction
@@ -112,6 +113,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val ctx = context ?: return
         val repo = chromeViewModel.bookmarkRepo
         val icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_illustration_no_bookmarks)?.toBitmap()
         awesomeBar.addProviders(
@@ -119,11 +121,15 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
                     onSuggestionClicked(it)
                 },
                 SearchSuggestionProvider(
-                        SearchEngineManager.getInstance().getDefaultSearchEngine(context),
+                        SearchEngineManager.getInstance().getDefaultSearchEngine(ctx),
                         WebViewProvider.getUserAgentString(activity)) {
+                    onSuggestionClicked(it)
+                },
+                ClipboardSuggestionProvider(ctx) {
                     onSuggestionClicked(it)
                 }
         )
+        awesomeBar.onInputStarted() // if something is in the clipboard, it'll be the first and show directly
     }
 
     private fun initQuickSearch(view: View) {

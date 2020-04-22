@@ -264,6 +264,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutine}"
     implementation "org.mozilla.components:concept-awesomebar:+"
     implementation "org.mozilla.components:browser-awesomebar:+"
+    implementation "org.mozilla.components:concept-engine:+"
 
     testImplementation "junit:junit:${Versions.junit}"
     testImplementation "org.robolectric:robolectric:${Versions.robolectric}"
