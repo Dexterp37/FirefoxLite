@@ -29,7 +29,7 @@ import kotlin.concurrent.thread
 class ChromeViewModel(
     private val settings: Settings,
     private var newFeatureNotice: NewFeatureNotice,
-    private val bookmarkRepo: BookmarkRepository,
+    val bookmarkRepo: BookmarkRepository,
     private val privateMode: PrivateMode,
     private val browsers: Browsers,
     private val storageHelper: StorageHelper

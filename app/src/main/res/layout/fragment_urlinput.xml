@@ -106,15 +106,6 @@
             android:background="@color/colorUrlInputBackground"
             android:contentDescription="@string/content_description_dismiss_input" />
 
-<!--        <org.mozilla.focus.widget.FlowLayout-->
-<!--            android:id="@+id/search_suggestion"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/quick_search_container"-->
-<!--            android:layout_margin="10dp"-->
-<!--            android:animateLayoutChanges="true"-->
-<!--            tools:background="#55FF0000" />-->
-
         <mozilla.components.browser.awesomebar.BrowserAwesomeBar
             android:id="@+id/awesomeBar"
             android:layout_width="match_parent"

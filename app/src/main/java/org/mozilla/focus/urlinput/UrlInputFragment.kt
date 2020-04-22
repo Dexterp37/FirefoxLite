@@ -24,15 +24,12 @@ import mozilla.components.browser.domains.autocomplete.ShippedDomainsProvider
 import mozilla.components.ui.autocomplete.InlineAutocompleteEditText
 import org.mozilla.focus.R
 import org.mozilla.focus.navigation.ScreenNavigator
-import org.mozilla.focus.persistence.BookmarksDatabase
-import org.mozilla.focus.repository.BookmarkRepository
 import org.mozilla.focus.search.SearchEngineManager
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.SearchUtils
 import org.mozilla.focus.utils.SupportUtils
 import org.mozilla.focus.utils.ViewUtils
 import org.mozilla.focus.web.WebViewProvider
-import org.mozilla.focus.widget.FlowLayout
 import org.mozilla.rocket.awesomebar.BookmarkSuggestionProvider
 import org.mozilla.rocket.awesomebar.SearchSuggestionProvider
 import org.mozilla.rocket.chrome.ChromeViewModel
@@ -60,7 +57,6 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     private lateinit var chromeViewModel: ChromeViewModel
 
     private lateinit var urlView: InlineAutocompleteEditText
-    private lateinit var suggestionView: FlowLayout
     private lateinit var clearView: View
     private lateinit var dismissView: View
     private lateinit var quickSearchRecyclerView: RecyclerView
@@ -72,9 +68,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
     override fun onCreate(bundle: Bundle?) {
         appComponent().inject(this)
         super.onCreate(bundle)
-        val userAgent = WebViewProvider.getUserAgentString(activity)
-        this.presenter = UrlInputPresenter(SearchEngineManager.getInstance()
-                .getDefaultSearchEngine(activity), userAgent)
+        this.presenter = UrlInputPresenter()
         chromeViewModel = getActivityViewModel(chromeViewModelCreator)
 
         context?.let {
@@ -94,8 +88,6 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
 
         clearView = view.findViewById(R.id.clear)
         clearView.setOnClickListener(this)
-
-//        suggestionView = view.findViewById<View>(R.id.search_suggestion) as FlowLayout
 
         urlView = view.findViewById<View>(R.id.url_edit) as InlineAutocompleteEditText
         urlView.setOnTextChangeListener(::onTextChange)
@@ -120,7 +112,7 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repo = BookmarkRepository.getInstance(BookmarksDatabase.getInstance(context!!))
+        val repo = chromeViewModel.bookmarkRepo
         val icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_illustration_no_bookmarks)?.toBitmap()
         awesomeBar.addProviders(
                 BookmarkSuggestionProvider(icon, repo) {
@@ -275,35 +267,6 @@ class UrlInputFragment : Fragment(), UrlInputContract.View, View.OnClickListener
             this.urlView.setText(text)
             this.urlView.setSelection(text.length)
         }
-    }
-
-    override fun setSuggestions(texts: List<CharSequence>?) {
-
-//        this.suggestionView.removeAllViews()
-//        if (texts == null) {
-//            return
-//        }
-//
-//        val searchKey = urlView.originalText.trim { it <= ' ' }.toLowerCase(Locale.getDefault())
-//        for (i in texts.indices) {
-//            val item = View.inflate(context, R.layout.tag_text, null) as TextView
-//            val str = texts[i].toString()
-//            val idx = str.toLowerCase(Locale.getDefault()).indexOf(searchKey)
-//            if (idx != -1) {
-//                val builder = SpannableStringBuilder(texts[i])
-//                builder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-//                        idx,
-//                        idx + searchKey.length,
-//                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//                item.text = builder
-//            } else {
-//                item.text = texts[i]
-//            }
-//
-//            item.setOnClickListener(this)
-//            item.setOnLongClickListener(this)
-//            this.suggestionView.addView(item)
-//        }
     }
 
     override fun setQuickSearchVisible(visible: Boolean) {

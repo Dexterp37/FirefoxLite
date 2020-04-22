@@ -21,13 +21,6 @@ public class UrlInputContract {
         void setUrlText(@Nullable CharSequence text);
 
         /**
-         * Use these suggestions, or replace existing ones, if any.
-         *
-         * @param texts
-         */
-        void setSuggestions(@Nullable List<CharSequence> texts);
-
-        /**
          * Set quick search view's visibility
          *
          * @param visible
